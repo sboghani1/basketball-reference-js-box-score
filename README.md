@@ -4,7 +4,7 @@ Scraper for basketball-reference.com to get NBA data in a usable format. Startin
 
 ![alt text](example_screenshot.png "OKC at GSW")
 
-```
+```javascript
 {
   gameDate: '2023-11-16',
   numExtraPeriods: 0,
@@ -27,7 +27,7 @@ Scraper for basketball-reference.com to get NBA data in a usable format. Startin
 ```
 
 Data Model
-```
+```javascript
 BoxScore: {
     gameDate: string,
     numExtraPeriods: number,
@@ -51,7 +51,7 @@ PeriodBreakdown: {
 ```
 
 Functions
-```
+```javascript
 getBoxScores(date) => Promise<[]BoxScore>
 
 date: {
@@ -60,7 +60,7 @@ date: {
     day: number
 }
 ```
-```
+```javascript
 getBoxScoresForDates(last_game_date, num_additional_days, file_path, box_score_transformation) => Promise<[]BoxScore>
 
 last_game_date: {
@@ -76,8 +76,8 @@ file_path?: string
 box_score_transformation?: (BoxScore) => void
 ```
 
-Example Simple
-```
+How to use - simple
+```javascript
 const bref = require('@sahirb/basketball-reference')
 
 const date = {
@@ -92,8 +92,8 @@ bref.getBoxScores(date).then(boxScores => {
 
 ```
 
-Example Advanced (save to file with new 'feeling' column)
-```
+How to use - advanced (save multiple days to file with new 'feeling' column)
+```javascript
 const bref = require('@sahirb/basketball-reference')
 
 const last_game_date = {

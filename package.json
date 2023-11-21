@@ -1,6 +1,6 @@
 {
   "name": "@sahirb/basketball-reference",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Javscript helpers to parse the basketball-reference.com box scores page",
   "main": "index.js",
   "scripts": {
