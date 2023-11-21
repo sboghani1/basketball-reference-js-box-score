@@ -1,10 +1,23 @@
-# basketball-reference
+# basketball-reference 🏀 🧬
 
-Scraper for basketball-reference.com to get NBA data in a usable format. Starting with per quarter & game totals. Able to scrape this table into the BoxScore data model
+Parse basketball-reference.com for NBA data! 🏀 🧬
+
+
+Currently supports getting game totals. For example, if we're interested in 2023-11-16
+
+https://www.basketball-reference.com/boxscores/?month=11&day=16&year=2023
 
 ![alt text](example_screenshot.png "OKC at GSW")
 
 ```javascript
+const bref = require('@sahirb/basketball-reference')
+bref.getBoxScores({
+    year: 2023,
+    month: 11,
+    day: 16
+});
+
+// -- result --
 {
   gameDate: '2023-11-16',
   numExtraPeriods: 0,
@@ -23,6 +36,9 @@ Scraper for basketball-reference.com to get NBA data in a usable format. Startin
   losingTeam: 'Golden State',
   winningTeamScore: 128,
   losingTeamScore: 109
+},
+{
+    ... // NJ Nets at Miami
 }
 ```
 
