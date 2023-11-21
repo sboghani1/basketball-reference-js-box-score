@@ -85,11 +85,11 @@ last_game_date: {
     day: number
 }
 
-num_additional_days: number
+num_additional_days: number // additional days going back from last_game_date
 
-file_path?: string
+file_path?: string // (optional) local file to save result to
 
-box_score_transformation?: (BoxScore) => void
+box_score_transformation?: (BoxScore) => void // (optional) callback applied to each BoxScore in the response (and in the local file if file_path specified)
 ```
 
 How to use - simple
