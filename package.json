@@ -1,5 +1,5 @@
 {
-  "name": "basketball-reference-js",
+  "name": "@sahirb/basketball-reference",
   "version": "1.0.0",
   "description": "Javscript helpers to parse the basketball-reference.com box scores page",
   "main": "index.js",
@@ -25,5 +25,6 @@
   "dependencies": {
     "axios": "^1.6.2",
     "cheerio": "^1.0.0-rc.12"
-  }
+  },
+  "devDependencies": {}
 }

@@ -1,3 +1,5 @@
+// made by sahir (iKnow im also shocked)
+
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
@@ -90,12 +92,12 @@ function previousDay(current_date) {
     }
 }
 
-function getBoxScoresForDatesHelper(current_game_date, num_days_lookback, daily_scores, resolve, reject, file_path, box_score_transformation) {
+function getBoxScoresForDatesHelper(current_game_date, num_additional_days, daily_scores, resolve, reject, file_path, box_score_transformation) {
     getBoxScoresForDate(current_game_date)
     .then(boxScores => {
         if (boxScores.length === 0) {
             const prev_game_date = previousDay(current_game_date);
-            getBoxScoresForDatesHelper(prev_game_date, num_days_lookback - 1, daily_scores, resolve, reject, file_path, box_score_transformation);
+            getBoxScoresForDatesHelper(prev_game_date, num_additional_days - 1, daily_scores, resolve, reject, file_path, box_score_transformation);
         }
 
         if (boxScores.length > 0) {
@@ -126,7 +128,7 @@ function getBoxScoresForDatesHelper(current_game_date, num_days_lookback, daily_
 
             daily_scores.push(boxScores);
 
-            if (num_days_lookback == 0) {
+            if (num_additional_days == 0) {
                 if (file_path) {
                     fs.writeFileSync(file_path, JSON.stringify(daily_scores));
                 }
@@ -134,7 +136,7 @@ function getBoxScoresForDatesHelper(current_game_date, num_days_lookback, daily_
                 resolve(daily_scores);
             } else {
                 const prev_game_date = previousDay(current_game_date);
-                getBoxScoresForDatesHelper(prev_game_date, num_days_lookback - 1, daily_scores, resolve, reject, file_path, box_score_transformation);
+                getBoxScoresForDatesHelper(prev_game_date, num_additional_days - 1, daily_scores, resolve, reject, file_path, box_score_transformation);
             }
         }
     })
@@ -143,9 +145,9 @@ function getBoxScoresForDatesHelper(current_game_date, num_days_lookback, daily_
     });
 }
 
-function getBoxScoresForDates(last_game_date, num_days_lookback, file_path, box_score_transformation) {
+function getBoxScoresForDates(last_game_date, num_additional_days, file_path, box_score_transformation) {
     return new Promise((resolve, reject) => {
-        getBoxScoresForDatesHelper(last_game_date, num_days_lookback, [], resolve, reject, file_path, box_score_transformation);
+        getBoxScoresForDatesHelper(last_game_date, num_additional_days, [], resolve, reject, file_path, box_score_transformation);
     });
 }
 
