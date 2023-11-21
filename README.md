@@ -78,7 +78,7 @@ box_score_transformation?: (BoxScore) => void
 
 Example Simple
 ```
-const bref = require('basketball-reference-js')
+const bref = require('@sahirb/basketball-reference')
 
 const date = {
     year: 2023,
@@ -94,7 +94,7 @@ bref.getBoxScores(date).then(boxScores => {
 
 Example Advanced (save to file with new 'feeling' column)
 ```
-const bref = require('basketball-reference-js')
+const bref = require('@sahirb/basketball-reference')
 
 const last_game_date = {
     year: 2023,
