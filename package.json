@@ -1,0 +1,29 @@
+{
+  "name": "basketball-reference-js",
+  "version": "1.0.0",
+  "description": "Javscript helpers to parse the basketball-reference.com box scores page",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No tests yet!"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sboghani1/basketball-reference-js-box-score.git"
+  },
+  "keywords": [
+    "nba",
+    "basketball",
+    "basketball-reference",
+    "box-score"
+  ],
+  "author": "sahirb",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sboghani1/basketball-reference-js-box-score/issues"
+  },
+  "homepage": "https://github.com/sboghani1/basketball-reference-js-box-score#readme",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "cheerio": "^1.0.0-rc.12"
+  }
+}
