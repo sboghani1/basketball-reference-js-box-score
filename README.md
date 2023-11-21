@@ -1,4 +1,4 @@
-# basketball-reference [docmentation in progress]
+# basketball-reference
 
 Scraper for basketball-reference.com to get NBA data in a usable format. Starting with per quarter & game totals. Able to scrape this table into the BoxScore data model
 
