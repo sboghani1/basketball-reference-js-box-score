@@ -124,9 +124,10 @@ function getBoxScoresForDatesHelper(current_game_date, num_additional_days, dail
                 if (box_score_transformation != null) {
                     box_score_transformation(bs);
                 }
+
+                daily_scores.push(bs);
             });
 
-            daily_scores.push(boxScores);
 
             if (num_additional_days == 0) {
                 if (file_path) {

@@ -1,4 +1,4 @@
-const bref = require('basketball-reference-js')
+const bref = require('@sahirb/basketball-reference')
 
 /*
     This is an example for
@@ -15,7 +15,7 @@ const last_game_date = {
     month: 11,
     day: 16
 };
-const num_additional_days = 2;
+const num_additional_days = 0;
 const local_file_path = "/Users/boghani/basketball-reference-js-box-score/output_json.txt";
 const box_score_transformation = (boxScore) => {
     let feeling = 'snooze fest';
@@ -32,5 +32,11 @@ const box_score_transformation = (boxScore) => {
 };
 
 bref.getBoxScoresForDates(last_game_date, num_additional_days, local_file_path, box_score_transformation).then(boxScores => {
-    boxScores.forEach(boxScore => console.log(boxScore));
+    const len = boxScores.length;
+    console.log(`Got ${len} box scores`);
+
+    boxScores.forEach(boxScore => {
+        console.log(boxScore);
+        console.log(boxScore.periodBreakdown)
+    });
 });

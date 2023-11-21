@@ -1,8 +1,29 @@
 # basketball-reference [docmentation in progress]
 
-Install:
+Scraper for basketball-reference.com to get NBA data in a usable format. Starting with per quarter & game totals. Able to scrape this table into the BoxScore data model
+
+![alt text](example_screenshot.png "OKC at GSW")
+
 ```
-npm i @sahirb/basketball-reference
+{
+  gameDate: '2023-11-16',
+  numExtraPeriods: 0,
+  periodBreakdown: [
+    { period: 1, roadTotal: 39, homeTotal: 24 },
+    { period: 2, roadTotal: 28, homeTotal: 36 },
+    { period: 3, roadTotal: 27, homeTotal: 25 },
+    { period: 4, roadTotal: 34, homeTotal: 24 }
+  ],
+  roadTeam: 'Oklahoma City',
+  homeTeam: 'Golden State',
+  gameTotal: 237,
+  roadTeamTotal: 128,
+  homeTeamTotal: 109,
+  winningTeam: 'Oklahoma City',
+  losingTeam: 'Golden State',
+  winningTeamScore: 128,
+  losingTeamScore: 109
+}
 ```
 
 Data Model
@@ -19,7 +40,13 @@ BoxScore: {
     losingTeam: string,
     winningTeamScore: number,
     losingTeamScore: number,
-    periodBreakdown: PeriodBreakdown
+    periodBreakdown: []PeriodBreakdown
+}
+
+PeriodBreakdown: {
+    period: number,
+    roadTotal: number,
+    homeTotal: number
 }
 ```
 
