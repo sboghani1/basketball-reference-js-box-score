@@ -1,14 +1,14 @@
 {
-  "name": "@sahirb/basketball-reference",
-  "version": "1.0.8",
-  "description": "Javscript helpers to parse basketball-reference.com",
+  "name": "@sahirb/nba-stats",
+  "version": "1.0.1",
+  "description": "NBA data and Javascript APIs to access stats. Also the util APIs that were used to build the stat files.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"No tests yet!"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sboghani1/basketball-reference-js-box-score.git"
+    "url": "git+https://github.com/sboghani1/nba-stats.git"
   },
   "keywords": [
     "nba",
@@ -34,9 +34,9 @@
   "author": "sahirb",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/sboghani1/basketball-reference-js-box-score/issues"
+    "url": "https://github.com/sboghani1/nba-stats/issues"
   },
-  "homepage": "https://github.com/sboghani1/basketball-reference-js-box-score#readme",
+  "homepage": "https://github.com/sboghani1/nba-stats#readme",
   "dependencies": {
     "axios": "^1.6.2",
     "cheerio": "^1.0.0-rc.12"

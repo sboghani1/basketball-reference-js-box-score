@@ -3,8 +3,23 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
-const fspromise = require('node:fs/promises');
-// import * as readline from 'node:readline/promises';
+
+const last_season = {
+    startYear: 2022,
+    endYear: 2023
+};
+const first_season = {
+    startYear: 2018,
+    endYear: 2019
+};
+
+function isValidRequest(nba_season) {
+    if (nba_season.startYear < first_season.startYear || nba_season.endYear > last_season.endYear) {
+        return false;
+    }
+
+    return true;
+}
 
 function httpGetWithRetry(url, currentAttempt, maxAttempts) {
     return new Promise((resolve, reject) => {
@@ -180,13 +195,6 @@ function getBoxScoresForDatesHelper(current_game_date, num_additional_days, dail
     .then(boxScores => {
         console.log(`Fetched ${boxScores.length} games played on ${current_game_date.month}-${current_game_date.day}, ${num_additional_days} days left to query`);
 
-        if (boxScores.length === 0) {
-            const prev_game_date = previousDay(current_game_date);
-            doAfterSeconds(20, () => {
-                getBoxScoresForDatesHelper(prev_game_date, num_additional_days - 1, daily_scores, resolve, reject, file_path, box_score_transformation);
-            });
-        }
-
         if (boxScores.length > 0) {
             boxScores.forEach(bs => {
                 decorateBoxScore(bs);
@@ -197,20 +205,19 @@ function getBoxScoresForDatesHelper(current_game_date, num_additional_days, dail
 
                 daily_scores.push(bs);
             });
+        }
 
-
-            if (num_additional_days == 0) {
-                if (file_path) {
-                    fs.writeFileSync(file_path, JSON.stringify(daily_scores));
-                }
-
-                resolve(daily_scores);
-            } else {
-                const prev_game_date = previousDay(current_game_date);
-                doAfterSeconds(20, () => {
-                    getBoxScoresForDatesHelper(prev_game_date, num_additional_days - 1, daily_scores, resolve, reject, file_path, box_score_transformation);
-                });
+        if (num_additional_days == 0) {
+            if (file_path) {
+                fs.writeFileSync(file_path, JSON.stringify(daily_scores));
             }
+
+            resolve(daily_scores);
+        } else {
+            const prev_game_date = previousDay(current_game_date);
+            doAfterSeconds(20, () => {
+                getBoxScoresForDatesHelper(prev_game_date, num_additional_days - 1, daily_scores, resolve, reject, file_path, box_score_transformation);
+            });
         }
     })
     .catch(error => {
@@ -226,23 +233,6 @@ function getBoxScoresForDates(last_game_date, num_additional_days, file_path, bo
 
 function getBoxScores(date) {
     return getBoxScoresForDates(date, 0);
-}
-
-const last_season = {
-    startYear: 2022,
-    endYear: 2023
-};
-const first_season = {
-    startYear: 2021,
-    endYear: 2022
-};
-
-function isValidRequest(nba_season) {
-    if (nba_season.startYear < first_season.startYear || nba_season.endYear > last_season.endYear) {
-        return false;
-    }
-
-    return true;
 }
 
 function getSeasonScores(season_start_year, box_score_filter) {
