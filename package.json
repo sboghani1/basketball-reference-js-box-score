@@ -1,7 +1,7 @@
 {
   "name": "@sahirb/basketball-reference",
-  "version": "1.0.7",
-  "description": "Javscript helpers to parse the basketball-reference.com box scores page",
+  "version": "1.0.8",
+  "description": "Javscript helpers to parse basketball-reference.com",
   "main": "index.js",
   "scripts": {
     "test": "echo \"No tests yet!"
@@ -14,7 +14,22 @@
     "nba",
     "basketball",
     "basketball-reference",
-    "box-score"
+    "reference",
+    "box",
+    "score",
+    "boxscore",
+    "box-score",
+    "gamescore",
+    "games",
+    "game score",
+    "game stats",
+    "totals",
+    "player totals",
+    "player stats",
+    "team stats",
+    "season stats",
+    "stats",
+    "npm"
   ],
   "author": "sahirb",
   "license": "ISC",

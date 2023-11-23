@@ -3,6 +3,8 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 const fs = require('fs');
+const fspromise = require('node:fs/promises');
+// import * as readline from 'node:readline/promises';
 
 function httpGetWithRetry(url, currentAttempt, maxAttempts) {
     return new Promise((resolve, reject) => {
@@ -89,37 +91,105 @@ function previousDay(current_date) {
         year: next_date.getUTCFullYear(),
         month: next_date.getUTCMonth() + 1,
         day: next_date.getUTCDate()
+    };
+}
+
+function getCompactBoxScore(box_score) {
+    return {
+        gameDate: box_score.gameDate,
+        roadTeam: box_score.roadTeam,
+        homeTeam: box_score.homeTeam,
+        numExtraPeriods: box_score.numExtraPeriods,
+        periodBreakdown: box_score.periodBreakdown
+    };
+}
+
+function getFileString(box_scores) {
+    let compactBoxScores = '';
+
+    box_scores.forEach(bs => {
+        compactBoxScores += JSON.stringify(getCompactBoxScore(bs)) + '\n';
+    });
+
+    return compactBoxScores;
+}
+
+function readBoxScores(file_path) {
+    const boxScores = [];
+    const lines = fs.readFileSync(file_path, 'utf-8').split('\n');
+    lines.pop();
+
+    lines.forEach(line => {
+        boxScores.push(JSON.parse(line));
+    });
+
+    return boxScores;
+}
+
+function sortFileByGameDate(file_path) {
+    const sortedBoxScores = readBoxScores(file_path);
+
+    sortedBoxScores.sort((a, b) => {
+        return new Date(a.gameDate).getTime() - new Date(b.gameDate).getTime();
+    });
+
+    fs.writeFileSync(file_path, getFileString(sortedBoxScores));
+}
+
+
+function appendCompactBoxScores(box_scores, file_path) {
+    fs.appendFileSync(file_path, getFileString(box_scores));
+}
+
+function decorateBoxScore(box_score) {
+    let roadTeamTotal = 0;
+    let homeTeamTotal = 0;
+
+    box_score.periodBreakdown.forEach(pb => {
+        roadTeamTotal += pb.roadTotal;
+        homeTeamTotal += pb.homeTotal;
+    });
+
+
+    box_score.gameTotal = roadTeamTotal + homeTeamTotal;
+    box_score.roadTeamTotal = roadTeamTotal;
+    box_score.homeTeamTotal = homeTeamTotal;
+
+    const homeWinner = homeTeamTotal > roadTeamTotal;
+    box_score.winningTeam = homeWinner ? box_score.homeTeam : box_score.roadTeam;
+    box_score.losingTeam = homeWinner ? box_score.roadTeam : box_score.homeTeam;
+    box_score.winningTeamScore = homeWinner ? homeTeamTotal : roadTeamTotal;
+    box_score.losingTeamScore = homeWinner ? roadTeamTotal : homeTeamTotal;
+}
+
+let show_message = true;
+function doAfterSeconds(seconds, callback) {
+    if (show_message) {
+        console.log(`50/50 message: waiting ${seconds} seconds in between requests..`);
+
+        show_message = Math.random() >= 0.5;
     }
+
+    setTimeout(() => {
+        callback();
+    }, 1000 * seconds);
 }
 
 function getBoxScoresForDatesHelper(current_game_date, num_additional_days, daily_scores, resolve, reject, file_path, box_score_transformation) {
     getBoxScoresForDate(current_game_date)
     .then(boxScores => {
+        console.log(`Fetched ${boxScores.length} games played on ${current_game_date.month}-${current_game_date.day}, ${num_additional_days} days left to query`);
+
         if (boxScores.length === 0) {
             const prev_game_date = previousDay(current_game_date);
-            getBoxScoresForDatesHelper(prev_game_date, num_additional_days - 1, daily_scores, resolve, reject, file_path, box_score_transformation);
+            doAfterSeconds(20, () => {
+                getBoxScoresForDatesHelper(prev_game_date, num_additional_days - 1, daily_scores, resolve, reject, file_path, box_score_transformation);
+            });
         }
 
         if (boxScores.length > 0) {
             boxScores.forEach(bs => {
-                let roadTeamTotal = 0;
-                let homeTeamTotal = 0;
-
-                bs.periodBreakdown.forEach(pb => {
-                    roadTeamTotal += pb.roadTotal;
-                    homeTeamTotal += pb.homeTotal;
-                });
-
-
-                bs.gameTotal = roadTeamTotal + homeTeamTotal;
-                bs.roadTeamTotal = roadTeamTotal;
-                bs.homeTeamTotal = homeTeamTotal;
-
-                const homeWinner = homeTeamTotal > roadTeamTotal;
-                bs.winningTeam = homeWinner ? bs.homeTeam : bs.roadTeam;
-                bs.losingTeam = homeWinner ? bs.roadTeam : bs.homeTeam;
-                bs.winningTeamScore = homeWinner ? homeTeamTotal : roadTeamTotal;
-                bs.losingTeamScore = homeWinner ? roadTeamTotal : homeTeamTotal;
+                decorateBoxScore(bs);
 
                 if (box_score_transformation != null) {
                     box_score_transformation(bs);
@@ -137,7 +207,9 @@ function getBoxScoresForDatesHelper(current_game_date, num_additional_days, dail
                 resolve(daily_scores);
             } else {
                 const prev_game_date = previousDay(current_game_date);
-                getBoxScoresForDatesHelper(prev_game_date, num_additional_days - 1, daily_scores, resolve, reject, file_path, box_score_transformation);
+                doAfterSeconds(20, () => {
+                    getBoxScoresForDatesHelper(prev_game_date, num_additional_days - 1, daily_scores, resolve, reject, file_path, box_score_transformation);
+                });
             }
         }
     })
@@ -156,8 +228,67 @@ function getBoxScores(date) {
     return getBoxScoresForDates(date, 0);
 }
 
+const last_season = {
+    startYear: 2022,
+    endYear: 2023
+};
+const first_season = {
+    startYear: 2021,
+    endYear: 2022
+};
+
+function isValidRequest(nba_season) {
+    if (nba_season.startYear < first_season.startYear || nba_season.endYear > last_season.endYear) {
+        return false;
+    }
+
+    return true;
+}
+
+function getSeasonScores(season_start_year, box_score_filter) {
+    const season = {
+        startYear: season_start_year,
+        endYear: season_start_year + 1
+    }
+
+    if (!isValidRequest(season)) {
+        return new Error(`Invalid season in request, you wanted ${season.startYear}-${season.endYear} but we only have ${first_season.startYear}-${last_season.endYear}`);
+    }
+
+    const filePath = `data/box_scores/${season.startYear}_${season.endYear}.txt`;
+    const boxScores = readBoxScores(filePath);
+
+    const decoratedBoxScores = [];
+    boxScores.forEach(boxScore => {
+        if (!box_score_filter || box_score_filter(boxScore)) {
+            decorateBoxScore(boxScore);
+            decoratedBoxScores.push(boxScore);
+        }
+    });
+
+    return decoratedBoxScores;
+}
+
+function getSeasonScoresSimple(season_start_year, teams_to_include) {
+    return getSeasonScores(season_start_year, (boxScore) => {
+        if (!teams_to_include) {
+            return true;
+        }
+
+        if (teams_to_include.includes(boxScore.roadTeam) || teams_to_include.includes(boxScore.homeTeam)) {
+            return true;
+        }
+
+        return false;
+    });
+}
+
 const bref = {}; // bref == basketball reference :)
 bref.getBoxScores = getBoxScores;
 bref.getBoxScoresForDates = getBoxScoresForDates;
+bref.appendCompactBoxScores = appendCompactBoxScores;
+bref.getSeasonScores = getSeasonScores;
+bref.getSeasonScoresSimple = getSeasonScoresSimple;
+bref.sortFileByGameDate = sortFileByGameDate;
 
-module.exports = bref
+module.exports = bref // npm link, npm link @sahirb/basketball-reference
