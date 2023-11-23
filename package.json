@@ -1,45 +1,45 @@
 {
-    "name": "@sahirb/basketball-reference",
-    "version": "1.10.0",
-    "description": "Javscript helpers to parse basketball-reference.com",
-    "main": "index.js",
-    "scripts": {
-      "test": "echo \"No tests yet!"
-    },
-    "repository": {
-      "type": "git",
-      "url": "git+https://github.com/sboghani1/basketball-reference-js-box-score.git"
-    },
-    "keywords": [
-      "nba",
-      "basketball",
-      "basketball-reference",
-      "reference",
-      "box",
-      "score",
-      "boxscore",
-      "box-score",
-      "gamescore",
-      "games",
-      "game score",
-      "game stats",
-      "totals",
-      "player totals",
-      "player stats",
-      "team stats",
-      "season stats",
-      "stats",
-      "npm"
-    ],
-    "author": "sahirb",
-    "license": "ISC",
-    "bugs": {
-      "url": "https://github.com/sboghani1/basketball-reference-js-box-score/issues"
-    },
-    "homepage": "https://github.com/sboghani1/basketball-reference-js-box-score#readme",
-    "dependencies": {
-      "axios": "^1.6.2",
-      "cheerio": "^1.0.0-rc.12"
-    },
-    "devDependencies": {}
-  }
+  "name": "@sahirb/nba-stats",
+  "version": "1.0.1",
+  "description": "NBA data and Javascript APIs to access stats. Also the util APIs that were used to build the stat files.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"No tests yet!"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sboghani1/nba-stats.git"
+  },
+  "keywords": [
+    "nba",
+    "basketball",
+    "basketball-reference",
+    "reference",
+    "box",
+    "score",
+    "boxscore",
+    "box-score",
+    "gamescore",
+    "games",
+    "game score",
+    "game stats",
+    "totals",
+    "player totals",
+    "player stats",
+    "team stats",
+    "season stats",
+    "stats",
+    "npm"
+  ],
+  "author": "sahirb",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sboghani1/nba-stats/issues"
+  },
+  "homepage": "https://github.com/sboghani1/nba-stats#readme",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "cheerio": "^1.0.0-rc.12"
+  },
+  "devDependencies": {}
+}
